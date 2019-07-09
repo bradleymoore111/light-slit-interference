@@ -3,89 +3,90 @@
 
 </head>
 <body>
-  <div style="text-align: center;">
+	<div style="text-align: center;">
 		<canvas id="main-canvas" width="920" height="600" style="border: 1px solid black;display:inline-block" onload="init()"></canvas>
-    <br>
-    <input type="number" id="numbers" value="3">
-    <br>
-    <input type="button" onclick="draw();" value="redraw">
+		<br>
+		<input type="number" id="numbers" value="3">
+		<br>
+		<input type="button" onclick="draw();" value="redraw">
 	</div>
 
 
-  <script>
-  var canvas,c,io;
-  var width, height;
-  var margin_x = 40;
-  var margin_y = 40;
+	<script>
+	var canvas,c,io;
+	var width, height;
+	var margin_x = 40;
+	var margin_y = 40;
 
-  var wires = []; // Possible TODO: make an array for every single type of entity.
+	var wires = []; // Possible TODO: make an array for every single type of entity.
 
-  function init(){
-  	canvas = document.getElementById("main-canvas");
-  	io = document.getElementById("io-panel");
+	function init(){
+		canvas = document.getElementById("main-canvas");
+		io = document.getElementById("io-panel");
 
-  	c = canvas.getContext("2d");
+		c = canvas.getContext("2d");
 
-    c.lineWidth=5;
+		c.lineWidth=5;
 
-    width = canvas.width;
-  	height = canvas.height;
+		width = canvas.width;
+		height = canvas.height;
 
-  	draw();
-  }
+		draw();
+	}
 
-  function draw(){
+	function draw(){
+		c.clearRect(0, 0, width, height)
+		
+		var n = Math.abs(parseInt( document.getElementById("numbers").value ));
+		n = n ? n : 1;
 
-    var n = Math.abs(parseInt( document.getElementById("numbers").value ));
+		console.log( "Redrawing, n = " + n );
 
-    n = n ? n : 1;
+		for(var i=0;i<width;i++){
+			c.beginPath();
+			// Intensity
+			var intensity = Math.pow((Math.abs(intense(n, i/30)) / n),2);
+			// console.log(intensity);
 
-    console.log( "Redrawing, n = " + n );
+			c.strokeStyle = 'rgba(0,0,0,' + intensity + ')';
 
-    for(var i=0;i<width;i++){
-      c.beginPath();
-      // Intensity
-      var intensity = Math.pow((Math.abs(intense(n, i/30)) / n),2);
-      // console.log(intensity);
+			c.moveTo(i, height/2);
+			c.lineTo(i+1, height/2);
 
-      c.strokeStyle = 'rgba(0,0,0,' + intensity + ')';
+			c.stroke();
 
-      c.moveTo(i, height/2);
-      c.lineTo(i+1, height/2);
-
-      c.stroke();
-
-      c.closePath();
-    }
+			c.closePath();
+		}
 
 
 
-  	// // Vertical lines.
-  	// var times = width/margin_x;
-  	// for(var i=0;i<times;i++){
-  	// 	c.moveTo(i*margin_x, 0);
-  	// 	c.lineTo(i*margin_x, height);
-  	// }
-    //
-  	// // Horizontal lines.
-  	// 	times = height/margin_y;
-  	// for(var i=0;i<times;i++){
-  	// 	c.moveTo(0,i*margin_y);
-  	// 	c.lineTo(width,i*margin_y);
-  	// }
+		// // Vertical lines.
+		// var times = width/margin_x;
+		// for(var i=0;i<times;i++){
+		// 	c.moveTo(i*margin_x, 0);
+		// 	c.lineTo(i*margin_x, height);
+		// }
+		//
+		// // Horizontal lines.
+		// 	times = height/margin_y;
+		// for(var i=0;i<times;i++){
+		// 	c.moveTo(0,i*margin_y);
+		// 	c.lineTo(width,i*margin_y);
+		// }
 
-  	c.stroke();
-  }
+		c.stroke();
+	}
 
-  function intense(n, phi){
-    if( n <= 1 ){
-      return n;
-    }
+	// The actual part I wanted to test.
+	function intense(n, phi){
+		if( n <= 1 ){
+			return n;
+		}
 
-    return 2 * Math.cos( (n-1) * phi / 2 ) + intense(n-2, phi);
-  }
+		return 2 * Math.cos( (n-1) * phi / 2 ) + intense(n-2, phi);
+	}
 
-  init();
-  </script>
+	init();
+	</script>
 </body>
 </html>
